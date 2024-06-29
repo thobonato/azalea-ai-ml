@@ -9,4 +9,3 @@ splits = {'train': 'train.csv', 'test': 'test.csv'}
 df = pd.read_csv("hf://datasets/BhabhaAI/DEITA-Complexity/" + splits["train"])
 
 print(df.head)
-
