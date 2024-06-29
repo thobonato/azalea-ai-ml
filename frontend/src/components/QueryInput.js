@@ -5,8 +5,6 @@ export const QueryInput = ({ query, setQuery, error, setError }) => {
     setQuery(e.target.value);
     if (e.target.value.trim() === '') {
       setError('Query cannot be empty');
-    } else {
-      setError(null);
     }
   };
 
@@ -27,3 +25,5 @@ export const QueryInput = ({ query, setQuery, error, setError }) => {
     </div>
   );
 };
+
+export default QueryInput;

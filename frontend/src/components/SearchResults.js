@@ -25,3 +25,5 @@ export const SearchResults = ({ result }) => (
     )}
   </div>
 );
+
+export default SearchResults;

@@ -14,11 +14,12 @@ const App = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSearch = async () => {
-    setError(null);
+  const handleSearch = async (model) => {
+    console.log(`Searching with model: ${model}`); // This should log to the console
     setIsLoading(true);
+    setError(null);
     try {
-      if (selectedModel === 'chatgpt') {
+      if (model === 'chatgpt') {
         window.open(`https://chat.openai.com/`, '_blank');
         setResult({
           result: "Please use your ChatGPT account to process this query: " + query,
@@ -31,18 +32,18 @@ const App = () => {
       } else {
         const response = await axios.post(`${config.API_URL}/query`, {
           query,
-          model: selectedModel,
+          model,
           conversationId
         });
         setResult(response.data);
         setConversationId(response.data.conversationId);
       }
-    } catch (error) {
-      setError('An error occurred while processing your request. Please try again.');
-      console.error('Error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+      } catch (error) {
+        console.error('Error:', error);
+        setError('An error occurred while processing your request. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
   };
 
   return (
@@ -54,6 +55,8 @@ const App = () => {
         setSelectedModel={setSelectedModel}
         handleSearch={handleSearch}
         isLoading={isLoading}
+        query={query}
+        conversationId={conversationId}
       />
       {error && <ErrorMessage message={error} />}
       {result && <SearchResults result={result} />}
