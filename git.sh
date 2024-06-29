@@ -1,5 +1,5 @@
 git add .
 
-git commit -m "push"
+git commit -m "auto push"
 
 git push -u origin main
