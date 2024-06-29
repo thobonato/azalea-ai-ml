@@ -1,76 +1,81 @@
-
-Usage:   
-  pip <command> [options]
-
-Commands:
-  install                     Install packages.
-  download                    Download packages.
-  uninstall                   Uninstall packages.
-  freeze                      Output installed packages in requirements format.
-  inspect                     Inspect the python environment.
-  list                        List installed packages.
-  show                        Show information about installed packages.
-  check                       Verify installed packages have compatible dependencies.
-  config                      Manage local and global configuration.
-  search                      Search PyPI for packages.
-  cache                       Inspect and manage pip's wheel cache.
-  index                       Inspect information available from package indexes.
-  wheel                       Build wheels from your requirements.
-  hash                        Compute hashes of package archives.
-  completion                  A helper command used for command completion.
-  debug                       Show information useful for debugging.
-  help                        Show help for commands.
-
-General Options:
-  -h, --help                  Show help.
-  --debug                     Let unhandled exceptions propagate outside the
-                              main subroutine, instead of logging them to
-                              stderr.
-  --isolated                  Run pip in an isolated mode, ignoring
-                              environment variables and user configuration.
-  --require-virtualenv        Allow pip to only run in a virtual environment;
-                              exit with an error otherwise.
-  --python <python>           Run pip with the specified Python interpreter.
-  -v, --verbose               Give more output. Option is additive, and can be
-                              used up to 3 times.
-  -V, --version               Show version and exit.
-  -q, --quiet                 Give less output. Option is additive, and can be
-                              used up to 3 times (corresponding to WARNING,
-                              ERROR, and CRITICAL logging levels).
-  --log <path>                Path to a verbose appending log.
-  --no-input                  Disable prompting for input.
-  --keyring-provider <keyring_provider>
-                              Enable the credential lookup via the keyring
-                              library if user input is allowed. Specify which
-                              mechanism to use [disabled, import, subprocess].
-                              (default: disabled)
-  --proxy <proxy>             Specify a proxy in the form
-                              scheme://[user:passwd@]proxy.server:port.
-  --retries <retries>         Maximum number of retries each connection should
-                              attempt (default 5 times).
-  --timeout <sec>             Set the socket timeout (default 15 seconds).
-  --exists-action <action>    Default action when a path already exists:
-                              (s)witch, (i)gnore, (w)ipe, (b)ackup, (a)bort.
-  --trusted-host <hostname>   Mark this host or host:port pair as trusted,
-                              even though it does not have valid or any HTTPS.
-  --cert <path>               Path to PEM-encoded CA certificate bundle. If
-                              provided, overrides the default. See 'SSL
-                              Certificate Verification' in pip documentation
-                              for more information.
-  --client-cert <path>        Path to SSL client certificate, a single file
-                              containing the private key and the certificate
-                              in PEM format.
-  --cache-dir <dir>           Store the cache data in <dir>.
-  --no-cache-dir              Disable the cache.
-  --disable-pip-version-check
-                              Don't periodically check PyPI to determine
-                              whether a new version of pip is available for
-                              download. Implied with --no-index.
-  --no-color                  Suppress colored output.
-  --no-python-version-warning
-                              Silence deprecation warnings for upcoming
-                              unsupported Pythons.
-  --use-feature <feature>     Enable new functionality, that may be backward
-                              incompatible.
-  --use-deprecated <feature>  Enable deprecated functionality, that will be
-                              removed in the future.
+annotated-types==0.7.0
+anyascii==0.3.2
+anyio==4.4.0
+appnope==0.1.4
+asttokens==2.4.1
+certifi==2024.6.2
+charset-normalizer==3.3.2
+click==8.1.7
+comm==0.2.2
+contractions==0.1.73
+debugpy==1.8.2
+decorator==5.1.1
+dnspython==2.6.1
+exceptiongroup==1.2.1
+executing==2.0.1
+filelock==3.15.4
+fsspec==2024.6.1
+gunicorn==22.0.0
+h11==0.14.0
+httpcore==1.0.5
+httpx==0.27.0
+huggingface-hub==0.23.4
+idna==3.7
+importlib_metadata==8.0.0
+ipykernel==6.29.4
+ipython==8.18.1
+jedi==0.19.1
+Jinja2==3.1.4
+joblib==1.4.2
+jupyter_client==8.6.2
+jupyter_core==5.7.2
+MarkupSafe==2.1.5
+matplotlib-inline==0.1.7
+mistralai==0.4.1
+mpmath==1.3.0
+nest-asyncio==1.6.0
+networkx==3.2.1
+nltk==3.8.1
+numpy==1.26.4
+orjson==3.10.5
+packaging==24.1
+pandas==2.2.2
+parso==0.8.4
+pexpect==4.9.0
+platformdirs==4.2.2
+prompt_toolkit==3.0.47
+psutil==6.0.0
+ptyprocess==0.7.0
+pure-eval==0.2.2
+pyahocorasick==2.1.0
+pydantic==2.7.4
+pydantic_core==2.18.4
+Pygments==2.18.0
+pymongo==4.8.0
+python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
+pytz==2024.1
+PyYAML==6.0.1
+pyzmq==26.0.3
+regex==2024.5.15
+requests==2.32.3
+safetensors==0.4.3
+scikit-learn==1.5.0
+scipy==1.13.1
+six==1.16.0
+sniffio==1.3.1
+stack-data==0.6.3
+sympy==1.12.1
+textsearch==0.0.24
+threadpoolctl==3.5.0
+tokenizers==0.19.1
+torch==2.3.1
+tornado==6.4.1
+tqdm==4.66.4
+traitlets==5.14.3
+transformers==4.42.3
+typing_extensions==4.12.2
+tzdata==2024.1
+urllib3==2.2.2
+wcwidth==0.2.13
+zipp==3.19.2
