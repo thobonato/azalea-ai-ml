@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def google_search(query):
-    api_key = os.getenv('GOOGLE_API_KEY')
-    cse_id = os.getenv('GOOGLE_CSE_ID')
+    api_key = 'AIzaSyAvVxpuIXQFXrmm34sKnJLTGHmjJUS6gEQ'
+    cse_id = '4707204545d384559'
     
     print("API Key:", api_key)  # Debug print to verify the correct API key is loaded
     print("CSE ID:", cse_id)    # Debug print to verify the correct CSE ID is loaded
@@ -24,4 +24,4 @@ def google_search(query):
 
 if __name__ == "__main__":
     # This is a test query to ensure the function works when the script is run directly
-    print(google_search("OpenAI"))
+    print(google_search("What is the terminal command to remove directory?"))
