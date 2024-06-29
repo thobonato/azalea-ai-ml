@@ -5,5 +5,5 @@
 
 # Models and Data #
 ######################
-*/backend/utils/*.pkl
-*/backend/utils/*.csv
+/backend/utils/*.pkl
+/backend/utils/*.csv
