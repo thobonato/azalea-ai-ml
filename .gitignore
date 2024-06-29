@@ -1,3 +1,4 @@
 
-# don't push venv
+# don't push venv or .env
 .venv/
+.env

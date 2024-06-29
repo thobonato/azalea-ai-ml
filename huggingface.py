@@ -1,14 +1,20 @@
-from transformers import pipeline
+from mistralai.client import MistralClient
+from mistralai.models.chat_completion import ChatMessage
+import os
 
-# Initialize the model
-generator = pipeline('text-generation', model='meta-llama/Meta-Llama-3-8B-Instruct')
+api_key = os.environ["MISTRAL_API_KEY"]
+model = "mistral-large-latest"
 
-# Function to generate response
-def generate_response(prompt, max_length=100):
-    result = generator(prompt, max_length=max_length, num_return_sequences=1)
-    return result[0]['generated_text']
+client = MistralClient(api_key=api_key)
 
-# Example usage
-prompt = "Explain quantum computing in simple terms:"
-response = generate_response(prompt)
-print(response)
+messages = [
+    ChatMessage(role="user", content="What is the best French cheese?")
+]
+
+# No streaming
+chat_response = client.chat(
+    model=model,
+    messages=messages,
+)
+
+print(chat_response.choices[0].message.content)
