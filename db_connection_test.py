@@ -1,26 +1,31 @@
 from pymongo import MongoClient
+import certifi
 import os
-from dotenv import load_dotenv
 
-# Make sure this comes before trying to get environment variables
+# Load environment variables if using a .env file
+from dotenv import load_dotenv
 load_dotenv()
 
 def test_mongodb():
-    uri = os.getenv('MONGODB_URI')
-    print("URI: ", uri)  # This will print the MongoDB URI to verify it's loaded correctly
-
-    client = MongoClient(uri)
-    db = client['azalea_db']  # replace 'myDatabaseName' with your actual database name
-    collection = db['test_collection']
-
-    # Try inserting a document
+    # Connect to MongoDB
+    uri = os.getenv("MONGODB_URI")
+    client = MongoClient(uri, tlsCAFile=certifi.where())
+    
+    # Select your database
+    db = client['azalea_db']
+    
+    # Select your collection
+    collection = db['user_data']
+    
+    # Insert a document
     insert_result = collection.insert_one({'name': 'test', 'value': 123})
-    print('Document inserted with id:', insert_result.inserted_id)
+    print(f'Document inserted with id {insert_result.inserted_id}')
+    
+    # Retrieve the document
+    retrieved_document = collection.find_one({'name': 'test'})
+    print(f'Document retrieved: {retrieved_document}')
 
-    # Try retrieving a document
-    document = collection.find_one({'name': 'test'})
-    print('Document retrieved:', document)
-
+    # Close the MongoDB connection
     client.close()
 
 if __name__ == '__main__':

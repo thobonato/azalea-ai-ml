@@ -1,11 +1,13 @@
 # backend/models/google_search.py
-import requests
-from googleapiclient.discovery import build
 import os
+from googleapiclient.discovery import build
 
 def google_search(query):
     api_key = os.getenv('GOOGLE_API_KEY')
     cse_id = os.getenv('GOOGLE_CSE_ID')
+    
+    if not api_key or not cse_id:
+        raise ValueError("API key and Custom Search Engine ID must be set in environment variables.")
     
     service = build("customsearch", "v1", developerKey=api_key)
     result = service.cse().list(q=query, cx=cse_id).execute()
@@ -13,3 +15,7 @@ def google_search(query):
     if 'items' in result:
         return result['items'][0]['snippet']
     return "No results found."
+
+if __name__ == "__main__":
+    # This is a test query to ensure the function works when the script is run directly
+    print(google_search("OpenAI"))
