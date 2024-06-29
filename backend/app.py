@@ -1,6 +1,4 @@
-from dotenv import load_dotenv
-import os
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, make_response
 from flask_cors import CORS
 from werkzeug.exceptions import BadRequest
 from models.google_search import google_search
@@ -9,8 +7,10 @@ from models.mistral import prompt_mistral
 from utils.scorer import calculate_score
 from utils.context_manager import ContextManager
 from database import save_conversation, get_conversation
+import os
+from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv()
 
 # Access environment variables
@@ -21,9 +21,8 @@ MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
 MONGODB_URI = os.getenv('MONGODB_URI')
 FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
 
-# Initialize Flask app
 app = Flask(__name__, static_folder='../frontend/build', static_url_path='')
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config['SECRET_KEY'] = FLASK_SECRET_KEY
 
 # Initialize context manager
@@ -46,8 +45,10 @@ def handle_general_exception(e):
     app.logger.error(f"Unexpected error: {str(e)}")
     return jsonify(error="An unexpected error occurred. Please try again later."), 500
 
-@app.route('/api/query', methods=['POST'])
+@app.route('/api/query', methods=['POST', 'OPTIONS'])
 def process_query():
+    if request.method == 'OPTIONS':
+        return _build_cors_preflight_response()
     try:
         data = request.json
         validate_query(data)
@@ -56,14 +57,12 @@ def process_query():
         selected_model = data['model']
         conversation_id = data.get('conversationId')
 
-        # Retrieve or create conversation context
         if conversation_id:
             context = context_manager.get_context(conversation_id)
         else:
             context = []
             conversation_id = context_manager.create_context()
 
-        # Process query with selected model
         if selected_model == 'google':
             result = google_search(query)
         elif selected_model == 'chatgpt':
@@ -73,13 +72,8 @@ def process_query():
         else:
             return jsonify({'error': 'Invalid model selection'}), 400
 
-        # Calculate score and eco-metrics
         score, eco_metrics = calculate_score(selected_model, query, len(context))
-
-        # Update context
         context_manager.update_context(conversation_id, query, result)
-
-        # Save to MongoDB
         save_conversation(conversation_id, query, result, selected_model)
 
         return jsonify({
@@ -95,6 +89,13 @@ def process_query():
         app.logger.error(f"Unexpected error: {str(e)}")
         return jsonify(error="An unexpected error occurred. Please try again later."), 500
 
+def _build_cors_preflight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type")
+    response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
+    return response
+
 @app.route('/api/conversation/<conversation_id>', methods=['GET'])
 def get_conversation_history(conversation_id):
     try:
@@ -107,14 +108,13 @@ def get_conversation_history(conversation_id):
         app.logger.error(f"Error retrieving conversation: {str(e)}")
         return jsonify(error="An error occurred while retrieving the conversation."), 500
 
-# Serve React App
 @app.route('/')
 def serve():
-    return send_from_directory(app.static_folder, 'index.html')
+    return send_from_directory(app.static_folder, 'frontend/public/index.html')
 
 @app.errorhandler(404)
 def not_found(e):
-    return app.send_static_file('index.html')
+    return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

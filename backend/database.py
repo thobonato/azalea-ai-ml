@@ -14,7 +14,3 @@ def save_conversation(conversation_id, query, response, model):
 
 def get_conversation(conversation_id):
     return conversations.find_one({'_id': conversation_id})
-
-# Update app.py to use these functions
-# In the /query route:
-save_conversation(conversation_id, query, result, selected_model)
