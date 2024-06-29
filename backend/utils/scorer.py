@@ -80,6 +80,51 @@ def train_model(df):
     
     return model, vectorizer
 
+def predict_complexity(model, vect, sentence):
+    features = vect.transform([sentence])
+    score = model.predict(features)
+    return score[0]
+
+def save_model_vect(model, vectorizer):
+    joblib.dump(model, 'scorer_rnd_forest_mdl.pkl')
+    joblib.dump(vectorizer, 'tfidf_vectorizer.pkl')
+
+def load_model_vect(model_name="scorer_rnd_forest_mdl.pkl", vect_name='tfidf_vectorizer.pkl'):
+    return joblib.load(model_name), joblib.load(vect_name)
+
+# Add this new function to calculate the score
+def calculate_score(model, query, context_length):
+    loaded_model, loaded_vect = load_model_vect()
+    
+    complexity = predict_complexity(loaded_model, loaded_vect, query)
+    
+    base_scores = {
+        'google': 0.75,
+        'chatgpt': 0.85,
+        'mistral': 0.80
+    }
+    
+    context_factor = min(context_length / 10, 1)  # Cap at 1
+    
+    model_factors = {
+        'google': {'complexity': -0.002, 'context': -0.05, 'energy': 0.0005, 'trees': 0.10, 'driving': 0.20},
+        'chatgpt': {'complexity': 0.003, 'context': 0.1, 'energy': 0.25, 'trees': 0.05, 'driving': 0.10},
+        'mistral': {'complexity': 0.002, 'context': 0.05, 'energy': 0.05, 'trees': 0.08, 'driving': 0.15}
+    }
+    
+    factors = model_factors[model]
+    score = base_scores[model] + (complexity * factors['complexity']) + (context_factor * factors['context'])
+    
+    return round(score, 2), {
+        'energyUsage': factors['energy'],
+        'treesSaved': factors['trees'],
+        'drivingAvoided': factors['driving']
+    }
+
+if __name__ == "__main__":
+    pass
+
+"""
 
 # Function to predict complexity
 def predict_complexity(model, vect, sentence):
@@ -99,7 +144,7 @@ def load_model_vect(model_name="scorer_rnd_forest_mdl.pkl",vect_name='tfidf_vect
 
 
 if __name__ == "__main__":
-
+    pass
     # ##>---- Preprocess CSV and Save -----<##
     # ########################################
     # get_csv_online()
@@ -128,3 +173,4 @@ if __name__ == "__main__":
     
     # for sent in sample_sentences:
     #     print("Predicted complexity score:", predict_complexity(loaded_model, loaded_vect, sent))
+"""
