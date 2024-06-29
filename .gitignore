@@ -1,4 +1,9 @@
-
-# don't push venv or .env
+# Venv and Env #
+######################
 .venv/
 .env
+
+# Models and Data #
+######################
+*.pkl
+*.csv
