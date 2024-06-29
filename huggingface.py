@@ -1,15 +1,12 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import pipeline
 
-# Load model and tokenizer
-model_name = "meta-llama/Llama-2-7b-hf"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+# Initialize the model
+generator = pipeline('text-generation', model='meta-llama/Meta-Llama-3-8B-Instruct')
 
 # Function to generate response
 def generate_response(prompt, max_length=100):
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-    outputs = model.generate(**inputs, max_length=max_length)
-    return tokenizer.decode(outputs[0], skip_special_tokens=True)
+    result = generator(prompt, max_length=max_length, num_return_sequences=1)
+    return result[0]['generated_text']
 
 # Example usage
 prompt = "Explain quantum computing in simple terms:"
