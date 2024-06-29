@@ -7,3 +7,9 @@
 ######################
 /backend/utils/*.pkl
 /backend/utils/*.csv
+combined_code.txt
+
+
+# Packages #
+############
+node_modules/
