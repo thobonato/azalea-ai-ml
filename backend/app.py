@@ -1,20 +1,5 @@
 from dotenv import load_dotenv
 import os
-
-load_dotenv()
-# Access environment variables
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-GOOGLE_CSE_ID = os.getenv('GOOGLE_CSE_ID')
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
-MONGODB_URI = os.getenv('MONGODB_URI')
-FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
-
-from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
-app = Flask(__name__, static_folder='../frontend/build', static_url_path='')
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
-
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.exceptions import BadRequest
@@ -24,15 +9,24 @@ from models.mistral import prompt_mistral
 from utils.scorer import calculate_score
 from utils.context_manager import ContextManager
 from database import save_conversation, get_conversation
-import os
-from dotenv import load_dotenv
 
+# Load environment variables from .env file
 load_dotenv()
 
-app = Flask(__name__, static_folder='../frontend/build', static_url_path='')
-CORS(app)
-app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
+# Access environment variables
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+GOOGLE_CSE_ID = os.getenv('GOOGLE_CSE_ID')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
+MONGODB_URI = os.getenv('MONGODB_URI')
+FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
 
+# Initialize Flask app
+app = Flask(__name__, static_folder='../frontend/build', static_url_path='')
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+app.config['SECRET_KEY'] = FLASK_SECRET_KEY
+
+# Initialize context manager
 context_manager = ContextManager()
 
 def validate_query(data):
