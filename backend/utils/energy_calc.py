@@ -29,13 +29,22 @@ def calculate_energy_out(prompt):
     # source: https://diminishedvaluecarolina.com/how-much-electricity-does-an-electric-car-consume#:~:text=Calculating%20Energy%20Consumption&text=Conversely%2C%20an%20inefficient%20EV%20using,month%20for%20the%20average%20driver.
     kWh_per_ft = 0.35 / 5280
     
-
-    # get count
+    # in mls per 1,000 toks
+    mistral_water = 3.58   # assuming 4x more efficient than gpt4
+    gpt4_water = 14.3
+    google_water = 0.572
+    
+    # get tok count
     tok_count = tokenize(prompt)
+
+    # COMPARE TO RECYCLING: plastic bags
+    # production of plastic bag generates ~200g of CO2
 
     # calc total cost
     mistral_cost *= tok_count
     gpt4_cost *= tok_count
+    mistral_water *= tok_count
+    gpt4_water *= tok_count
 
     # get winner
     if mistral_cost < gpt4_cost and mistral_cost < google_cost:
@@ -47,9 +56,19 @@ def calculate_energy_out(prompt):
                           "gpt-4" : gpt4_cost,
                           "google" : google_cost,
                           "winner": best_route},
-            "response_mi" : {"mistral" : mistral_cost/kWh_per_ft,
+            "response_ft" : {"mistral" : mistral_cost/kWh_per_ft,
                           "gpt-4" : gpt4_cost/kWh_per_ft,
-                          "google" : google_cost/kWh_per_ft}}
+                          "google" : google_cost/kWh_per_ft},
+            "response_ml" : {"mistral" : mistral_water,
+                          "gpt-4" : gpt4_water,
+                          "google" : google_water}}
 
 if __name__ == "__main__":
-    print(calculate_energy_out(" a half after its launch, ChatGPT has 180 million users. The AI chatbot is used for all sorts of things, from creating a travel itinerary to writing a paper or just asking a silly question.However, ChatGPT consumes a lot of energy in the process, up to 25 times more than a Google search. Additionally, a lot of water is also used in cooling for the servers that run all that software. Per conversation of about 20 to 50 queries, half a litre of water evaporates – a small bottle, in other words.To the moon and backHowever, those ‘conversations’ are not even the biggest energy drain. By far the most energy goes into training the language model GPT (the software behind the chatbot), which is done with hyper-fast supercomputers fed with huge amounts of text from the internet."))
+    print(calculate_energy_out("Ok this is the information I get from my function, but I want it to somehow draw a parallel to recycling. In what ways could I make it more tangible for the user?Ok this is the information I get from my function, but I want it to somehow draw a parallel to recycling. In what ways could I make it more tangible for the user?Ok this is the information I get from my function, but I want it to somehow draw a parallel to recycling. In what ways could I make it more tangible for the user?"))
+
+    
+    
+    # Avg CO2 Emissions from Energy Usage:
+    # 0.42kg of cO2 per kWh
+    # Avg CO2 Emissions from Car Miles Driven:
+    # According to the EPA, the average passenger vehicle emits about 0.404 kg of CO2 per mile. 
