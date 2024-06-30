@@ -1,93 +1,96 @@
 import os
 import sys
-from transformers import GPT2Tokenizer
+
+sys.path.append('/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/backend/utils')
+
 import scorer
 import energy_calc
 
-# Add the path to the utils folder
-sys.path.append("/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/backend/utils")
+def get_model_score(relative_cost, complexity, prompt_count, scaling_factor=5):
+    # Weighting factors (can be adjusted based on requirements)
+    cost_weight = 0.5
+    complexity_weight = 0.3
+    prompt_count_weight = 0.2
 
-# Initialize tokenizer
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+    # Example dynamic weighting adjustment
+    if prompt_count > 1:
+        cost_weight -= 0.1
+        prompt_count_weight += 0.1
 
-# Initialize prompt count (hardcoded for now)
-prompt_count = 1
+    if complexity > 1:
+        complexity_weight += 0.1
+        cost_weight -= 0.1
 
-def calculate_scores(prompt, model):
-    global prompt_count
+    # Scale the relative cost
+    scaled_cost = relative_cost * scaling_factor
 
-    # Calculate energy metrics using energy_calc.py
-    energy_metrics = energy_calc.calculate_energy_out(prompt)
+    # Calculate weighted score
+    score = (scaled_cost * cost_weight) + (complexity * complexity_weight) + (prompt_count * prompt_count_weight)
+    return score
 
-    # Calculate complexity using scorer.py
-    complexity_score = scorer.get_complexity_score(prompt)
+def calculate_relative_costs(energy_results):
+    # Calculate relative costs
+    total_cost = (energy_results["chatgpt"]["cost"] + 
+                  energy_results["google"]["cost"] + 
+                  energy_results["mistral"]["cost"])
 
-    # Get current cost from energy metrics
-    current_cost = energy_metrics[model]['cost']
+    if total_cost == 0:
+        relative_cost_chatgpt = relative_cost_google = relative_cost_mistral = 0
+    else:
+        relative_cost_chatgpt = 1 - (energy_results["chatgpt"]["cost"] / total_cost)
+        relative_cost_google = 1 - (energy_results["google"]["cost"] / total_cost)
+        relative_cost_mistral = 1 - (energy_results["mistral"]["cost"] / total_cost)
 
-    # Weights for the algorithm
-    environmental_weight = 1.0
-    complexity_weight = 1.0
-    chat_history_weight = 1.0
+    return relative_cost_mistral, relative_cost_chatgpt, relative_cost_google
 
-    # Adjust weights based on prompt count
-    if prompt_count == 1:
-        environmental_weight = 1.5
-        complexity_weight = 1.0
-        chat_history_weight = 0.5
-    elif prompt_count > 1:
-        environmental_weight = 1.0
-        complexity_weight = 1.0
-        chat_history_weight = 1.5
+def recommend_model_with_complexity_and_count(prompt, complexity, prompt_count):
+    # Calculate energy consumption for the current prompt
+    energy_results = energy_calc.calculate_energy_out(prompt)
 
-    # Calculate final score
-    final_score = (environmental_weight * current_cost +
-                   complexity_weight * complexity_score +
-                   chat_history_weight * prompt_count)
+    # Calculate relative costs
+    relative_cost_mistral, relative_cost_chatgpt, relative_cost_google = calculate_relative_costs(energy_results)
 
-    # Update prompt count for the next run
-    prompt_count += 1
+    # Calculate scores for each model
+    mistral_score = get_model_score(relative_cost_mistral, complexity, prompt_count)
+    chatgpt_score = get_model_score(relative_cost_chatgpt, complexity, prompt_count)
+    google_score = get_model_score(relative_cost_google, complexity, prompt_count)
 
-    return final_score, energy_metrics, complexity_score
+    return {
+        "mistral": {
+            "score": mistral_score,
+            "cost": energy_results["mistral"]["cost"],
+            "water": energy_results["mistral"]["water"],
+            "bag": energy_results["mistral"]["bag"],
+            "feet": energy_results["mistral"]["feet"]
+        },
+        "chatgpt": {
+            "score": chatgpt_score,
+            "cost": energy_results["chatgpt"]["cost"],
+            "water": energy_results["chatgpt"]["water"],
+            "bag": energy_results["chatgpt"]["bag"],
+            "feet": energy_results["chatgpt"]["feet"]
+        },
+        "google": {
+            "score": google_score,
+            "cost": energy_results["google"]["cost"],
+            "water": energy_results["google"]["water"],
+            "bag": energy_results["google"]["bag"],
+            "feet": energy_results["google"]["feet"]
+        }
+    }
 
 if __name__ == "__main__":
     while True:
-        # Get user input
         prompt = input("Enter your prompt (or type 'exit' to quit): ")
         if prompt.lower() == 'exit':
             break
-        model = input("Enter the model (mistral, gpt4, google): ").lower()
 
-        # Validate model input
-        if model not in ["mistral", "gpt4", "google"]:
-            print("Invalid model. Please enter 'mistral', 'gpt4', or 'google'.")
-            continue
+        prompt_count = 0
+        complexity_score = 4
 
-        # Calculate scores
-        final_score, energy_metrics, complexity_score = calculate_scores(prompt, model)
+        # Calculate energy consumption
+        energy_results = energy_calc.calculate_energy_out(prompt)
 
-        print(f"Model: {model}")
-        print(f"Environmental Metrics: {energy_metrics[model]}")
-        print(f"Complexity Score: {complexity_score}")
-        print(f"Final Score: {final_score}")
-
-        # Print overall results
-        print("Comprehensive Results:", [energy_calc.overall_cost, energy_calc.overall_water, energy_calc.overall_bag, energy_calc.overall_feet])
-        print("Overall Mistral:", {
-            "cost": energy_calc.overall_mistral_cost,
-            "water": energy_calc.overall_mistral_water,
-            "bag": energy_calc.overall_mistral_bag,
-            "feet": energy_calc.overall_mistral_feet
-        })
-        print("Overall GPT-4:", {
-            "cost": energy_calc.overall_gpt4_cost,
-            "water": energy_calc.overall_gpt4_water,
-            "bag": energy_calc.overall_gpt4_bag,
-            "feet": energy_calc.overall_gpt4_feet
-        })
-        print("Overall Google:", {
-            "cost": energy_calc.overall_google_cost,
-            "water": energy_calc.overall_google_water,
-            "bag": energy_calc.overall_google_bag,
-            "feet": energy_calc.overall_google_feet
-        })
+        
+        recommendation = recommend_model_with_complexity_and_count(prompt, complexity_score, prompt_count)
+        print(f"Recommendation: {recommendation}")

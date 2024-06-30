@@ -8,9 +8,6 @@ load_dotenv()
 def google_search(query):
     api_key = 'AIzaSyAvVxpuIXQFXrmm34sKnJLTGHmjJUS6gEQ'
     cse_id = '4707204545d384559'
-    
-    print("API Key:", api_key)  # Debug print to verify the correct API key is loaded
-    print("CSE ID:", cse_id)    # Debug print to verify the correct CSE ID is loaded
 
     if not api_key or not cse_id:
         raise ValueError("API key and Custom Search Engine ID must be set in environment variables.")
