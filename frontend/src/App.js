@@ -6,21 +6,22 @@ import ErrorMessage from './components/ErrorMessage';
 import config from './config';
 import SideNav from './components/sidenav';
 import Header from './components/Header';
+import Graph from './components/Graph';
 
 const App = () => {
   const [query, setQuery] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
-
   const [conversationId, setConversationId] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingModel, setIsLoadingModel] = useState(false);
+  const [loadingStates, setLoadingStates] = useState({});
   const [modelData, setModelData] = useState(null);
+  const [graphData, setGraphData] = useState(null);
 
   const handleSearch = async (model) => {
     console.log(`Searching with model: ${model}`);
     console.log(`Searching at: ${config.API_URL}/query/`);
-    setIsLoadingModel(true);
+    setLoadingStates(prev => ({ ...prev, [model]: true }));
     setError(null);
     
     console.log('Trying to get response...');
@@ -41,12 +42,15 @@ const App = () => {
       });
       console.log('Received response:', response.data);
       
+      // working here
+      setGraphData(response.data)
+      
       setConversationId(response.data.conversationId);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
       setError('An error occurred while processing your request. Please try again.');
     } finally {
-      setIsLoadingModel(false);
+      setLoadingStates(prev => ({ ...prev, [model]: false }));
     }
     console.log('Search process completed.');
   };
@@ -86,12 +90,11 @@ const App = () => {
   };
 
   return (
-    <>
-      <div className='flex h-[100dvh] max-h-[100dvh] min-w-[100dvw] max-w-[100dvw] overflow-hidden'>
-        <SideNav />
-        <div className="max-h-[100dvh] w-full"> 
-          <Header />
-          <div className= "container mx-auto p-4">
+    <div className='flex h-screen max-h-screen min-w-full max-w-full overflow-hidden'>
+      <SideNav />
+      <div className="max-h-screen w-full overflow-auto"> 
+        <Header />
+        <div className="container mx-auto p-4">
           <h1 className="text-3xl font-bold mb-4">Eco-Friendly AI Model Selector</h1>
           <QueryInput 
             query={query} 
@@ -105,17 +108,16 @@ const App = () => {
             selectedModel={selectedModel} 
             setSelectedModel={setSelectedModel}
             handleSearch={handleSearch}
-            isLoadingModel={isLoadingModel}
-            setIsLoadingModel={setIsLoadingModel}
+            loadingStates={loadingStates}
             query={query}
             conversationId={conversationId}
             modelData={modelData}
           />
+          {graphData && <Graph data={graphData} />}
           {error && <ErrorMessage message={error} />}
-          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
