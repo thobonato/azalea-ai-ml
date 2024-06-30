@@ -15,9 +15,12 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async (model) => {
-    console.log(`Searching with model: ${model}`); // This should log to the console
+    console.log(`Searching with model: ${model}`);
+    console.log(`Searching at: ${config.API_URL}/query/`);
     setIsLoading(true);
     setError(null);
+    
+    console.log('Trying to get response...');
     try {
       if (model === 'chatgpt') {
         window.open(`https://chat.openai.com/`, '_blank');
@@ -30,20 +33,33 @@ const App = () => {
           }
         });
       } else {
-        const response = await axios.post(`${config.API_URL}/query`, {
-          query,
-          model,
-          conversationId
+        const response = await axios({
+          method: 'post',
+          url: `${config.API_URL}/query/`,
+          data: {
+            query: query,
+            model: model,
+            conversationId: conversationId
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          withCredentials: true
         });
+        console.log('Received response...');
+        console.log('Response:', response.data);
+        
         setResult(response.data);
         setConversationId(response.data.conversationId);
       }
-      } catch (error) {
-        console.error('Error:', error);
-        setError('An error occurred while processing your request. Please try again.');
-      } finally {
-        setIsLoading(false);
-      }
+    } catch (error) {
+      console.error('Error:', error.response ? error.response.data : error.message);
+      setError('An error occurred while processing your request. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+    console.log('Search process completed.');
   };
 
   return (
