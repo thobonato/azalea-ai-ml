@@ -30,7 +30,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
-counter = 0
 
 # load model for complexity
 loaded_model,loaded_vect = load_model_vect(model_name="./utils/scorer_rnd_forest_mdl.pkl",
@@ -56,17 +55,15 @@ async def run_calculations(request: Request):
     complexity = predict_complexity(loaded_model, loaded_vect, query_post).item()
 
     # get this info from the algo eventually
-    return recommend_model_with_complexity_and_count(query_post, complexity, counter)
+    return recommend_model_with_complexity_and_count(query_post, complexity)
 
 
 @app.post("/query/")
 async def process_query(request: Request):
-    global counter
     
     # fetch data
     data = await request.json()
     query_post = data["query"]
-    counter += 1
 
 
     # Google search

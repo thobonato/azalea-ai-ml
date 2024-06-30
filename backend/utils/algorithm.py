@@ -1,61 +1,78 @@
 import os
 import sys
-
 sys.path.append('/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/backend/utils')
 
 import scorer
 import energy_calc
 
-def get_model_score(relative_cost, complexity, prompt_count, scaling_factor=5):
-    # Weighting factors (can be adjusted based on requirements)
-    cost_weight = 0.5
-    complexity_weight = 0.3
-    prompt_count_weight = 0.2
+def normalize_cost(cost, max_cost=50):
+    return (max_cost - cost) / max_cost  # Returns a value between 0 and 1
 
-    # Example dynamic weighting adjustment
-    if prompt_count > 1:
-        cost_weight -= 0.1
-        prompt_count_weight += 0.1
+def get_model_score(relative_cost, complexity, model):
+    # Adjust weights based on complexity
+    if complexity <= 2:
+        cost_weight = 0.7
+        complexity_weight = 0.3
+    elif complexity <= 4:
+        cost_weight = 0.6
+        complexity_weight = 0.4
+    else:
+        cost_weight = 0.5
+        complexity_weight = 0.5
 
-    if complexity > 1:
-        complexity_weight += 0.1
-        cost_weight -= 0.1
+    # Normalize the relative cost
+    normalized_cost = normalize_cost(relative_cost)
 
-    # Scale the relative cost
-    scaled_cost = relative_cost * scaling_factor
+    # Adjust score based on model and complexity
+    if model == "google":
+        if complexity <= 2:
+            complexity_score = 1.0
+        elif complexity <= 4:
+            complexity_score = 0.5
+        else:
+            complexity_score = 0.2
+    elif model == "mistral":
+        if complexity <= 2:
+            complexity_score = 0.5
+        elif complexity <= 4:
+            complexity_score = 1.0
+        else:
+            complexity_score = 0.7
+    else:  # chatgpt
+        if complexity <= 2:
+            complexity_score = 0.2
+        elif complexity <= 4:
+            complexity_score = 0.7
+        else:
+            complexity_score = 1.0
 
     # Calculate weighted score
-    score = (scaled_cost * cost_weight) + (complexity * complexity_weight) + (prompt_count * prompt_count_weight)
-    return score
+    score = (normalized_cost * cost_weight) + (complexity_score * complexity_weight)
+    return score * 6  # Scale to 0-6 range
 
 def calculate_relative_costs(energy_results):
-    # Calculate relative costs
-    total_cost = (energy_results["chatgpt"]["cost"] + 
-                  energy_results["google"]["cost"] + 
-                  energy_results["mistral"]["cost"])
-
+    total_cost = sum(energy_results[model]["cost"] for model in energy_results)
+    
     if total_cost == 0:
-        relative_cost_chatgpt = relative_cost_google = relative_cost_mistral = 0
-    else:
-        relative_cost_chatgpt = 1 - (energy_results["chatgpt"]["cost"] / total_cost)
-        relative_cost_google = 1 - (energy_results["google"]["cost"] / total_cost)
-        relative_cost_mistral = 1 - (energy_results["mistral"]["cost"] / total_cost)
+        return {model: 0 for model in energy_results}
+    
+    return {model: energy_results[model]["cost"] / total_cost for model in energy_results}
 
-    return relative_cost_mistral, relative_cost_chatgpt, relative_cost_google
-
-def recommend_model_with_complexity_and_count(prompt, complexity, prompt_count):
+def recommend_model_with_complexity_and_count(prompt, complexity):
     # Calculate energy consumption for the current prompt
     energy_results = energy_calc.calculate_energy_out(prompt)
 
     # Calculate relative costs
-    relative_cost_mistral, relative_cost_chatgpt, relative_cost_google = calculate_relative_costs(energy_results)
+    relative_costs = calculate_relative_costs(energy_results)
 
     # Calculate scores for each model
-    mistral_score = get_model_score(relative_cost_mistral, complexity, prompt_count)
-    chatgpt_score = get_model_score(relative_cost_chatgpt, complexity, prompt_count)
-    google_score = get_model_score(relative_cost_google, complexity, prompt_count)
+    mistral_score = get_model_score(relative_costs["mistral"], complexity, "mistral")
+    chatgpt_score = get_model_score(relative_costs["chatgpt"], complexity, "chatgpt")
+    google_score = get_model_score(relative_costs["google"], complexity, "google")
+
 
     return {
+        "complexity" : complexity,
         "mistral": {
             "score": mistral_score,
             "cost": energy_results["mistral"]["cost"],
@@ -85,12 +102,6 @@ if __name__ == "__main__":
         if prompt.lower() == 'exit':
             break
 
-        prompt_count = 0
-        complexity_score = 4
-
-        # Calculate energy consumption
-        energy_results = energy_calc.calculate_energy_out(prompt)
-
-        
-        recommendation = recommend_model_with_complexity_and_count(prompt, complexity_score, prompt_count)
+        complexity = float(input("Enter complexity (1-6): "))
+        recommendation = recommend_model_with_complexity_and_count(prompt, complexity)
         print(f"Recommendation: {recommendation}")
