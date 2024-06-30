@@ -6,9 +6,10 @@ const modelNames = {
   google: 'Google Search',
 };
 
-const ModelCard = ({ model, data, selectedModel, setSelectedModel, handleSearch, isLoadingModel, setIsLoadingModel }) => {
+const ModelCard = ({ model, data, selectedModel, setSelectedModel, handleSearch, loadingStates }) => {
   const modelName = modelNames[model] || model;
-  
+  const isLoadingModel = loadingStates[model];
+
   return (
     <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
       <h2 className="text-2xl font-bold mb-4">{modelName}</h2>
@@ -20,7 +21,6 @@ const ModelCard = ({ model, data, selectedModel, setSelectedModel, handleSearch,
       <ul className="space-y-2 mb-6">
         <li>⚡️ {data.cost?.toFixed(2) ?? 'N/A'} watt-hours used</li>
         <li>💧 {data.water?.toFixed(3) ?? 'N/A'} ounces used</li>
-        {/* <li>🌳 {data.bag?.toFixed(4) ?? 'N/A'} bags used</li> */}
         <li>🚗 {data.feet?.toFixed() ?? 'N/A'} feet of driving used</li>
       </ul>
       <button
@@ -31,25 +31,22 @@ const ModelCard = ({ model, data, selectedModel, setSelectedModel, handleSearch,
         disabled={isLoadingModel}
         className={`w-full py-2 px-4 rounded-md transition-colors ${
           isLoadingModel
-            ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+            ? 'bg-gray-400 text-gray-800'
             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
         }`}
       >
          {isLoadingModel ? 'Calculating...' : `Use ${modelName}`}
-          {isLoadingModel ? 'true' : 'false'}
       </button>
     </div>
   );
 };
 
-const ModelSelector = ({ selectedModel, setSelectedModel, handleSearch, isLoadingModel,setIsLoadingModel, modelData }) => {
+const ModelSelector = ({ selectedModel, setSelectedModel, handleSearch, loadingStates, modelData }) => {
   if (!modelData || typeof modelData !== 'object' || Object.keys(modelData).length === 0) {
     return <div className="text-center text-gray-600">No model data available. Please enter a query.</div>;
   }
 
-const {complexity, ...models} = modelData;
-console.log('modelData:', modelData);
-
+  const { complexity, ...models } = modelData;
 
   return (
     <div>
@@ -58,8 +55,8 @@ console.log('modelData:', modelData);
         <p className="text-gray-700">
           Estimated query complexity: <span className="font-medium">{complexity ?? 'N/A'}</span>
         </p>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {Object.entries(models).map(([model, data]) => (
           <ModelCard
             key={model}
@@ -68,11 +65,10 @@ console.log('modelData:', modelData);
             selectedModel={selectedModel}
             setSelectedModel={setSelectedModel}
             handleSearch={handleSearch}
-            isLoadingModel={isLoadingModel}
-            setIsLoadingModel={setIsLoadingModel}
+            loadingStates={loadingStates}
           />
-      ))}
-    </div>
+        ))}
+      </div>
     </div>
   );
 };
