@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.js": "/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/frontend/public/static/js/main.1a27e949.chunk.js",
-    "main.js.map": "/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/frontend/public/static/js/main.1a27e949.chunk.js.map",
-    "runtime-main.js": "/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/frontend/public/static/js/runtime-main.0bb8570f.js",
-    "runtime-main.js.map": "/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/frontend/public/static/js/runtime-main.0bb8570f.js.map",
-    "static/js/2.6f903c1c.chunk.js": "/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/frontend/public/static/js/2.6f903c1c.chunk.js",
-    "static/js/2.6f903c1c.chunk.js.map": "/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/frontend/public/static/js/2.6f903c1c.chunk.js.map",
-    "index.html": "/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/frontend/public/index.html",
-    "static/js/2.6f903c1c.chunk.js.LICENSE.txt": "/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/frontend/public/static/js/2.6f903c1c.chunk.js.LICENSE.txt"
+    "main.js": "./static/js/main.1a27e949.chunk.js",
+    "main.js.map": "./static/js/main.1a27e949.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.19e9a674.js",
+    "runtime-main.js.map": "./static/js/runtime-main.19e9a674.js.map",
+    "static/js/2.6f903c1c.chunk.js": "./static/js/2.6f903c1c.chunk.js",
+    "static/js/2.6f903c1c.chunk.js.map": "./static/js/2.6f903c1c.chunk.js.map",
+    "index.html": "./index.html",
+    "static/js/2.6f903c1c.chunk.js.LICENSE.txt": "./static/js/2.6f903c1c.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.0bb8570f.js",
+    "static/js/runtime-main.19e9a674.js",
     "static/js/2.6f903c1c.chunk.js",
     "static/js/main.1a27e949.chunk.js"
   ]
