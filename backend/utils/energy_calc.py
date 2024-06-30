@@ -32,29 +32,29 @@ def calculate_energy_out(prompt):
     # get token count
     tok_count = tokenize(prompt)
 
-    # current kWh consumed
-    current_mistral_cost = 0.0001 * tok_count # assumption: mistral 1% size of GPT-4, safe to assume ~4x more energy efficient
-    current_chatgpt_cost = 0.000375 * tok_count # assumption: chatgpt is 25x more expensive than google on an avg query (~200 tokens), therefore this is the cost
-    current_google_cost = 0.0003 * tok_count
+    # current Wh consumed
+    current_mistral_cost = 0.1 * tok_count # assumption: mistral 1% size of GPT-4, safe to assume ~4x more energy efficient
+    current_chatgpt_cost = 0.375 * tok_count # assumption: chatgpt is 25x more expensive than google on an avg query (~200 tokens), therefore this is the cost
+    current_google_cost = 0.3
 
-    # PER LITER OF WATER CONSUMPTION
-    # The national weighted average for thermoelectric and hydroelectric water use is 7.6  of evaporated water per kWh of electricity consumed at the point of end use. 
-    current_mistral_water = current_mistral_cost * 7.6 
-    current_chatgpt_water = current_chatgpt_cost * 7.6
-    current_google_water = current_google_cost * 7.6
+    # PER OUNCE OF WATER CONSUMPTION
+    # The national weighted average for thermoelectric and hydroelectric water use is 7.6 of evaporated water per kWh of electricity consumed at the point of end use. 
+    current_mistral_water = current_mistral_cost * 256.99 / 1000
+    current_chatgpt_water = current_chatgpt_cost * 256.99 / 1000
+    current_google_water = current_google_cost * 256.99 / 1000
 
     # PER PLASTIC BAG
     # production of plastic bag generates ~200g of CO2, which converts to 0.966 kWh of emissions
-    current_mistral_bag = current_mistral_cost / 0.966
-    current_chatgpt_bag = current_chatgpt_cost / 0.966
-    current_google_bag = current_google_cost / 0.966
+    current_mistral_bag = current_mistral_cost / 0.966 / 1000
+    current_chatgpt_bag = current_chatgpt_cost / 0.966 / 1000
+    current_google_bag = current_google_cost / 0.966 / 1000
 
     # PER FEET ELECTRIC CAR DRIVEN
     # convert to miles in electric car: 0.35kWh per mi
     # source: https://diminishedvaluecarolina.com/how-much-electricity-does-an-electric-car-consume#:~:text=Calculating%20Energy%20Consumption&text=Conversely%2C%20an%20inefficient%20EV%20using,month%20for%20the%20average%20driver.
-    current_mistral_feet = (current_mistral_cost * 5280) / 0.35
-    current_chatgpt_feet = (current_chatgpt_cost * 5280) / 0.35
-    current_google_feet = (current_google_cost * 5280) / 0.35
+    current_mistral_feet = (current_mistral_cost * 5280) / 0.35 / 1000
+    current_chatgpt_feet = (current_chatgpt_cost * 5280) / 0.35 / 1000
+    current_google_feet = (current_google_cost * 5280) / 0.35 / 1000
 
     return {
         "mistral": {

@@ -26,6 +26,7 @@ const QueryInput = ({ query, setQuery, error, setError, sendQuery, isLoading }) 
         }`}
       />
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      <div className="flex justify-center">
       <button
         onClick={sendQuery}
         disabled={isLoading}
@@ -37,6 +38,7 @@ const QueryInput = ({ query, setQuery, error, setError, sendQuery, isLoading }) 
       >
         {isLoading ? 'Calculating...' : 'Calculate'}
       </button>
+      </div>
     </div>
   );
 };
