@@ -1,7 +1,7 @@
-from mistralai.client import MistralClient
-from mistralai.models.chat_completion import ChatMessage
 from dotenv import load_dotenv
 import os
+from mistralai.client import MistralClient
+from mistralai.models.chat_completion import ChatMessage
 
 load_dotenv()
 
@@ -21,7 +21,7 @@ def prompt_mistral(prompt: str) -> str:
         messages=messages,
     )
 
-    print(chat_response.choices[0].message.content)
+    return chat_response.choices[0].message.content
 
 if __name__ == "__main__":
-    prompt_mistral("What is the best French cheese?")
+    print(prompt_mistral("What is the best French cheese?"))

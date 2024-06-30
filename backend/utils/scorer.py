@@ -80,52 +80,6 @@ def train_model(df):
     
     return model, vectorizer
 
-def predict_complexity(model, vect, sentence):
-    features = vect.transform([sentence])
-    score = model.predict(features)
-    return score[0]
-
-def save_model_vect(model, vectorizer):
-    joblib.dump(model, 'scorer_rnd_forest_mdl.pkl')
-    joblib.dump(vectorizer, 'tfidf_vectorizer.pkl')
-
-def load_model_vect(model_name="scorer_rnd_forest_mdl.pkl", vect_name='tfidf_vectorizer.pkl'):
-    return joblib.load(model_name), joblib.load(vect_name)
-
-# Add this new function to calculate the score
-def calculate_score(model, query, context_length):
-    loaded_model, loaded_vect = load_model_vect()
-    
-    complexity = predict_complexity(loaded_model, loaded_vect, query)
-    
-    base_scores = {
-        'google': 0.75,
-        'chatgpt': 0.85,
-        'mistral': 0.80
-    }
-    
-    context_factor = min(context_length / 10, 1)  # Cap at 1
-    
-    model_factors = {
-        'google': {'complexity': -0.002, 'context': -0.05, 'energy': 0.0005, 'trees': 0.10, 'driving': 0.20},
-        'chatgpt': {'complexity': 0.003, 'context': 0.1, 'energy': 0.25, 'trees': 0.05, 'driving': 0.10},
-        'mistral': {'complexity': 0.002, 'context': 0.05, 'energy': 0.05, 'trees': 0.08, 'driving': 0.15}
-    }
-    
-    factors = model_factors[model]
-    score = base_scores[model] + (complexity * factors['complexity']) + (context_factor * factors['context'])
-    
-    return round(score, 2), {
-        'energyUsage': factors['energy'],
-        'treesSaved': factors['trees'],
-        'drivingAvoided': factors['driving']
-    }
-
-if __name__ == "__main__":
-    pass
-
-"""
-
 # Function to predict complexity
 def predict_complexity(model, vect, sentence):
     features = vect.transform([sentence])
@@ -144,7 +98,6 @@ def load_model_vect(model_name="scorer_rnd_forest_mdl.pkl",vect_name='tfidf_vect
 
 
 if __name__ == "__main__":
-    pass
     # ##>---- Preprocess CSV and Save -----<##
     # ########################################
     # get_csv_online()
@@ -160,17 +113,16 @@ if __name__ == "__main__":
     # model, vectorizer = train_model(df)
     # save_model_vect(model, vectorizer)
 
-    ##>--------- Load and Inference ---------<##
-    ########################################
-    # sample_sentences = ["How complex is this sentence?", 
-    #                     "PrerequisitesBefore we start, make sure that you have the PyMongo distribution installed. In the Python shell, the following should run without raising an exception:import pymongoThis tutorial also assumes that a MongoDB instance is running on the default host and port. Assuming you have downloaded and installed MongoDB, you can start it like so:$ mongod",
-    #                     "botta hella complex",
-    #                     "write me a really insane essay on dogs.",
-    #                     "who was the 15th president usa",
-    #                     "write me a full stack project on astrophysics with visualization",
-    #                     "Create a speech about miso soup and its health benefits and why we should eat it everyday. Do it based on the guidelines I am sending you and make sure it is about 9 minutes in length. You can create the visual aid yourself. Make it about how miso soup is made.  Guidelines: Overview A speaking outline is a condensed version of a preparation outline. You use the speaking outline when you deliver your speech. It contains just enough information to jog your memory and remind you of what you want to say. It should not have so much information on it that you could read it out loud and it would make sense. Instead, it consists of sentence fragments or key words. There are two exceptions to this rule: Quotations and oral citations. If you quote someone in your speech, it should be written on the speaking outline exactly as the source stated it. The speaking outline also includes detailed oral citations.  Please see the Oral Citation Guide for additional information on what to include in an oral citation.  Divide and label the outline into the main components of a speech, Introduction, Body, and Conclusion. Include transitions between each section of the speech. The transitions should be in parenthesis. Include more detailed oral citationsInclude exact wording of quotations if using Include brief visual aid indicators. In other words, what you plan to say to introduce the visual aid, how you will explain the visual aid, and what you plan to say immediately after you show your visual aid to the audience. MAKE SURE TO GIVE ME THE VISUAL AID AND ONLY USE REAL SOURCES AND PROVIDE LINKS TO THOSE SOURCES"]
-    # loaded_model,loaded_vect = load_model_vect()
+    #>--------- Load and Inference ---------<##
+    #######################################
+    sample_sentences = ["How complex is this sentence?", 
+                        "PrerequisitesBefore we start, make sure that you have the PyMongo distribution installed. In the Python shell, the following should run without raising an exception:import pymongoThis tutorial also assumes that a MongoDB instance is running on the default host and port. Assuming you have downloaded and installed MongoDB, you can start it like so:$ mongod",
+                        "botta hella complex",
+                        "write me a really insane essay on dogs.",
+                        "who was the 15th president usa",
+                        "write me a full stack project on astrophysics with visualization",
+                        "Create a speech about miso soup and its health benefits and why we should eat it everyday. Do it based on the guidelines I am sending you and make sure it is about 9 minutes in length. You can create the visual aid yourself. Make it about how miso soup is made.  Guidelines: Overview A speaking outline is a condensed version of a preparation outline. You use the speaking outline when you deliver your speech. It contains just enough information to jog your memory and remind you of what you want to say. It should not have so much information on it that you could read it out loud and it would make sense. Instead, it consists of sentence fragments or key words. There are two exceptions to this rule: Quotations and oral citations. If you quote someone in your speech, it should be written on the speaking outline exactly as the source stated it. The speaking outline also includes detailed oral citations.  Please see the Oral Citation Guide for additional information on what to include in an oral citation.  Divide and label the outline into the main components of a speech, Introduction, Body, and Conclusion. Include transitions between each section of the speech. The transitions should be in parenthesis. Include more detailed oral citationsInclude exact wording of quotations if using Include brief visual aid indicators. In other words, what you plan to say to introduce the visual aid, how you will explain the visual aid, and what you plan to say immediately after you show your visual aid to the audience. MAKE SURE TO GIVE ME THE VISUAL AID AND ONLY USE REAL SOURCES AND PROVIDE LINKS TO THOSE SOURCES"]
+    loaded_model,loaded_vect = load_model_vect()
     
-    # for sent in sample_sentences:
-    #     print("Predicted complexity score:", predict_complexity(loaded_model, loaded_vect, sent))
-"""
+    for sent in sample_sentences:
+        print("Predicted complexity score:", predict_complexity(loaded_model, loaded_vect, sent))
