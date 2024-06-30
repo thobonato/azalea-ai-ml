@@ -1,16 +1,20 @@
 import React from 'react';
 
-export const QueryInput = ({ query, setQuery, error, setError }) => {
+const QueryInput = ({ query, setQuery, error, setError, sendQuery, isLoading }) => {
   const handleChange = (e) => {
     setQuery(e.target.value);
     if (e.target.value.trim() === '') {
       setError('Query cannot be empty');
+    } else {
+      setError('');
     }
   };
 
   return (
     <div className="mb-6">
-      <label htmlFor="query" className="block text-sm font-medium text-gray-700 mb-2">Enter your query</label>
+      <label htmlFor="query" className="block text-sm font-medium text-gray-700 mb-2">
+        Enter your query
+      </label>
       <input
         id="query"
         type="text"
@@ -22,6 +26,17 @@ export const QueryInput = ({ query, setQuery, error, setError }) => {
         }`}
       />
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      <button
+        onClick={sendQuery}
+        disabled={isLoading}
+        className={`mt-4 w-full py-2 px-4 rounded-md transition-colors ${
+          isLoading
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-indigo-600 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+        }`}
+      >
+        {isLoading ? 'Calculating...' : 'Calculate'}
+      </button>
     </div>
   );
 };
