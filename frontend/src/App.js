@@ -7,6 +7,7 @@ import config from './config';
 import SideNav from './components/sidenav';
 import Header from './components/Header';
 import Graph from './components/Graph';
+import Result from './components/Result';
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -113,6 +114,8 @@ const App = () => {
             conversationId={conversationId}
             modelData={modelData}
           />
+          {/* add here */}
+          {graphData && <Result data={graphData} />}
           {graphData && <Graph data={graphData} />}
           {error && <ErrorMessage message={error} />}
         </div>

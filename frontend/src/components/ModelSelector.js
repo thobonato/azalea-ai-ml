@@ -11,7 +11,7 @@ const ModelCard = ({ model, data, selectedModel, setSelectedModel, handleSearch,
   const isLoadingModel = loadingStates[model];
 
   return (
-    <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white border border-gray-200 mb-6 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
       <h2 className="text-2xl font-bold mb-4">{modelName}</h2>
       <div className="mb-4">
         <span className="inline-block px-3 py-1 rounded-md bg-indigo-100 text-indigo-800 font-semibold">
