@@ -1,5 +1,5 @@
 const config = {
-  API_URL: 'http://127.0.0.1:8000'
+  API_URL: 'https://azalea-ai-ml-4959da38218c.herokuapp.com/'
 };
 
 export default config;

@@ -36,7 +36,7 @@ loaded_model,loaded_vect = load_model_vect(model_name="./utils/scorer_rnd_forest
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000/*", "https://azalea-ml.vercel.app/*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
