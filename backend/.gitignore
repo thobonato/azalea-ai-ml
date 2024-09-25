@@ -1,0 +1,21 @@
+# Venv, Envm etc. #
+######################
+.venv/
+.env
+**.pyc
+__pycache__
+
+# Models and Data #
+######################
+/utils/*.pkl
+/utils/**.csv
+combined_code.txt
+
+
+# Packages #
+############
+node_modules/
+
+API_KEY
+.DS_Store
+node_modules
