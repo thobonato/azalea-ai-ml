@@ -15,3 +15,5 @@ combined_code.txt
 node_modules/
 
 API_KEY
+.DS_Store
+node_modules
