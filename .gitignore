@@ -1,7 +1,9 @@
-# Venv and Env #
+# Venv, Envm etc. #
 ######################
 .venv/
 .env
+**.pyc
+__pycache__
 
 # Models and Data #
 ######################

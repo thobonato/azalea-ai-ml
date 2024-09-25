@@ -6,7 +6,6 @@ from utils.scorer import load_model_vect, predict_complexity
 from utils.energy_calc import update_overall, calculate_energy_out, get_overall_results
 from utils.context_manager import ContextManager
 from utils.algorithm import recommend_model_with_complexity_and_count
-from database import save_conversation, get_conversation
 from models.google_search import google_search
 from models.chatgpt import chatgpt_search
 from models.mistral import prompt_mistral
