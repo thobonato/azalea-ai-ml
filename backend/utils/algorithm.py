@@ -1,9 +1,4 @@
-import os
-import sys
-sys.path.append('/Users/thomazbonato/Desktop/Personal/Summer24/Coding/Azalea/backend/utils')
-
-import scorer
-import energy_calc
+from utils import energy_calc
 
 def normalize_cost(cost, max_cost=50):
     return (max_cost - cost) / max_cost  # Returns a value between 0 and 1

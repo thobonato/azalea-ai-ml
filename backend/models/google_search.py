@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def google_search(query):
-    api_key = 'AIzaSyAvVxpuIXQFXrmm34sKnJLTGHmjJUS6gEQ'
-    cse_id = '4707204545d384559'
+    api_key = os.getenv("GOOGLE_CSE_ID")
+    cse_id = os.getenv("GOOGLE_API_KEY")
 
     if not api_key or not cse_id:
         raise ValueError("API key and Custom Search Engine ID must be set in environment variables.")
