@@ -4,7 +4,6 @@ import numpy as np
 import re
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-import contractions
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -20,9 +19,6 @@ def preprocess(text):
     # Check if the input is a string
     if not isinstance(text, str):
         return ''  # Return an empty string for non-string input
-    
-    # Expand contractions
-    text = contractions.fix(text)
 
     # Remove HTML tags, special characters, keep alpha numberic + punctuation
     text = re.sub(r'<[^>]+>', '', text)
